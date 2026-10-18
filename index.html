@@ -59,17 +59,17 @@
       padding: 12px;
       border: 2px solid rgba(236,240,241,0.8);
       border-radius: 10px;
-      font-size: 16px; /* Увеличенный шрифт (меньше проблем с выделением) */
+      font-size: 16px;
       outline: none;
       font-family: inherit;
-      background: #FFFFFF; /* Явно белый фон */
-      color: #2C3E50; /* Темный текст */
-      -webkit-text-fill-color: #2C3E50; /* Принудительный цвет текста в WebKit */
+      background: #FFFFFF;
+      color: #2C3E50;
+      -webkit-text-fill-color: #2C3E50;
     }
     
     .field input:focus, .field textarea:focus { 
       border-color: #3498DB; 
-      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3); /* Подсветка при фокусе */
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
     }
     
     .field input::placeholder, .field textarea::placeholder {
@@ -226,7 +226,7 @@
 </head>
 <body>
 
-  <!-- ПРИВЕТСТВЕННЫЙ ЭКРАН (5 сек) -->
+  <!-- ПРИВЕТСТВЕННЫЙ ЭКРАН (2 сек) -->
   <div class="welcome-screen" id="welcome-screen">
     <div class="welcome-overlay"></div>
     <div class="welcome-content">
@@ -374,13 +374,13 @@
       received: { text: 'Подарок получен', icon: '⚫' }
     };
 
-    // Авто-закрытие приветствия через 5 секунд
+    // Авто-закрытие приветствия через 2 секунды
     setTimeout(function() {
       const welcome = document.getElementById('welcome-screen');
       welcome.classList.add('hidden');
       document.getElementById('app-container').style.display = 'block';
       showRegistrationOrMain();
-    }, 5000);
+    }, 2000);
 
     async function api(path, body) {
       const res = await fetch('/api/' + path, {
