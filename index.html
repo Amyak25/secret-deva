@@ -50,8 +50,13 @@
       outline: none;
       font-family: inherit;
       background: rgba(255,255,255,0.95);
+      color: #2C3E50;
     }
     .field input:focus, .field textarea:focus { border-color: #3498DB; }
+    .field input::placeholder, .field textarea::placeholder {
+      color: #95A5A6;
+      opacity: 1;
+    }
     .field textarea { min-height: 80px; resize: vertical; }
     .required { color: #E74C3C; }
     .btn {
