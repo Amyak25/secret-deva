@@ -11,12 +11,18 @@
     
     /* Глобальное выделение текста */
     *::selection {
-      background: #3498DB !important;
+      background: #E74C3C !important;
       color: white !important;
     }
     *::-moz-selection {
-      background: #3498DB !important;
+      background: #E74C3C !important;
       color: white !important;
+    }
+
+    /* ЖЕЛЕЗОБЕТОННОЕ РЕШЕНИЕ ДЛЯ WebView */
+    input:focus, textarea:focus {
+      background-color: #FFF3F0 !important; /* Легкий красноватый фон при фокусе */
+      border-color: #E74C3C !important;
     }
 
     body {
@@ -68,8 +74,7 @@
     }
     
     .field input:focus, .field textarea:focus { 
-      border-color: #3498DB; 
-      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.3);
     }
     
     .field input::placeholder, .field textarea::placeholder {
