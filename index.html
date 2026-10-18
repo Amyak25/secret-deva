@@ -8,10 +8,17 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    
+    /* Глобальное выделение текста */
     *::selection {
-      background: #3498DB;
-      color: white;
+      background: #3498DB !important;
+      color: white !important;
     }
+    *::-moz-selection {
+      background: #3498DB !important;
+      color: white !important;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-image: url('https://ivyofetwwhfrbkwyuzgr.supabase.co/storage/v1/object/public/photos/background.jpg');
@@ -45,22 +52,31 @@
     .header p { font-size: 14px; opacity: 0.95; }
     .field { margin-bottom: 14px; }
     .field label { display: block; font-size: 13px; font-weight: 700; color: #34495E; margin-bottom: 6px; }
+    
+    /* Усиленная настройка для полей ввода */
     .field input, .field textarea {
       width: 100%;
       padding: 12px;
       border: 2px solid rgba(236,240,241,0.8);
       border-radius: 10px;
-      font-size: 14px;
+      font-size: 16px; /* Увеличенный шрифт (меньше проблем с выделением) */
       outline: none;
       font-family: inherit;
-      background: rgba(255,255,255,0.95);
-      color: #2C3E50;
+      background: #FFFFFF; /* Явно белый фон */
+      color: #2C3E50; /* Темный текст */
+      -webkit-text-fill-color: #2C3E50; /* Принудительный цвет текста в WebKit */
     }
-    .field input:focus, .field textarea:focus { border-color: #3498DB; }
+    
+    .field input:focus, .field textarea:focus { 
+      border-color: #3498DB; 
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3); /* Подсветка при фокусе */
+    }
+    
     .field input::placeholder, .field textarea::placeholder {
       color: #95A5A6;
       opacity: 1;
     }
+    
     .field textarea { min-height: 80px; resize: vertical; }
     .required { color: #E74C3C; }
     .btn {
