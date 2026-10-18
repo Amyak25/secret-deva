@@ -218,7 +218,7 @@
     </div>
 
     <!-- РЕГИСТРАЦИЯ -->
-    <div id="screen-register">
+    <div id="screen-register" class="hidden">
       <div class="card">
         <h2 style="margin-bottom: 14px;">📝 Регистрация</h2>
 
@@ -255,7 +255,7 @@
           <textarea id="reg-wishes" placeholder="Люблю книги, сладости, тёплые носки..."></textarea>
         </div>
 
-        <button class="btn" onclick="register()">Сохранить</button>
+        <button class="btn" onclick="register()">Начать</button>
       </div>
     </div>
 
@@ -354,7 +354,7 @@
       const welcome = document.getElementById('welcome-screen');
       welcome.classList.add('hidden');
       document.getElementById('app-container').style.display = 'block';
-      init();
+      showRegistrationOrMain();
     }, 5000);
 
     async function api(path, body) {
@@ -384,7 +384,7 @@
       if (tab === 'admin') loadAdminList();
     }
 
-    async function init() {
+    async function showRegistrationOrMain() {
       const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
       if (!user) {
         document.body.innerHTML = '<div style="padding:40px;text-align:center;color:white;font-size:18px;">Открой через Telegram</div>';
@@ -396,6 +396,7 @@
       const result = await api('get-santa', { telegram_id: user.id });
 
       if (result.error === 'Ты ещё не зарегистрирован') {
+        // Показываем регистрацию
         document.getElementById('screen-register').classList.remove('hidden');
         document.getElementById('screen-main').classList.add('hidden');
 
@@ -410,6 +411,7 @@
         return;
       }
 
+      // Уже зарегистрирован — показываем главную
       myData = result.me;
       assignedData = result.assigned;
       isAdmin = myData.is_admin;
