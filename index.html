@@ -9,7 +9,6 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     
-    /* Глобальное выделение текста */
     *::selection {
       background: #E74C3C !important;
       color: white !important;
@@ -53,10 +52,6 @@
     .field { margin-bottom: 14px; }
     .field label { display: block; font-size: 13px; font-weight: 700; color: #34495E; margin-bottom: 6px; }
     
-    /* 
-      ФОН ПОЛЕЙ СДЕЛАН СВЕТЛО-СЕРЫМ (#F2F4F5), 
-      ЧТОБЫ СИСТЕМНОЕ ВЫДЕЛЕНИЕ (СИНЕЕ/СЕРОЕ) БЫЛО ВИДНО
-    */
     .field input, .field textarea {
       width: 100%;
       padding: 12px;
@@ -65,14 +60,14 @@
       font-size: 16px;
       outline: none;
       font-family: inherit;
-      background: #F2F4F5; /* Светло-серый фон */
+      background: #F2F4F5;
       color: #2C3E50;
       -webkit-text-fill-color: #2C3E50;
     }
     
     .field input:focus, .field textarea:focus { 
       border-color: #3498DB;
-      background: #FFFFFF; /* При фокусе — белый */
+      background: #FFFFFF;
       box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
     }
     
@@ -100,7 +95,7 @@
     .btn-green { background: linear-gradient(135deg, #27AE60, #229954); box-shadow: 0 4px 12px rgba(39,174,96,0.4); }
     .btn-blue { background: linear-gradient(135deg, #3498DB, #2980B9); box-shadow: 0 4px 12px rgba(52,152,219,0.4); }
     .btn-grey { background: linear-gradient(135deg, #95A5A6, #7F8C8D); box-shadow: 0 4px 12px rgba(149,165,166,0.4); }
-    .btn-small { padding: 10px 16px; font-size: 13px; width: auto; display: inline-block; margin: 6px 6px 0 0; }
+    .btn-small { padding: 12px 24px; font-size: 14px; width: auto; display: inline-block; margin: 8px auto 0 auto; }
     .status-badge {
       display: inline-block;
       padding: 6px 12px;
@@ -123,10 +118,12 @@
       border-radius: 20px;
       margin-bottom: 14px;
       box-shadow: 0 6px 20px rgba(231,76,60,0.4);
+      text-align: center; /* Центрируем текст и кнопки */
     }
-    .assign-card h2 { font-size: 22px; margin-bottom: 10px; }
-    .assign-card .info { font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
-    .assign-card .address { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; margin: 6px 0; font-size: 13px; }
+    .assign-card h2 { font-size: 22px; margin-bottom: 10px; text-align: left; }
+    .assign-card .info { font-size: 14px; line-height: 1.6; margin-bottom: 10px; text-align: left; }
+    .assign-card .address { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; margin: 6px 0; font-size: 13px; text-align: left; }
+    
     .hidden { display: none !important; }
     .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
     .tab {
@@ -369,13 +366,14 @@
     let assignedData = null;
     let isAdmin = false;
 
+    // РУССКИЕ СТАТУСЫ
     const STATUS_LABELS = {
-      not_seen: { text: 'Игра начата, но твой Санта пока не видел, что дарит тебе подарок', icon: '🟡' },
-      chosen: { text: 'Санта выбирает подарок', icon: '🟣' },
-      bought: { text: 'Подарок куплен', icon: '🔵' },
-      shipping: { text: 'Подарок в пути', icon: '🟠' },
-      ready: { text: 'Подарок готов к выдаче. Напишите в ветку, когда будете готовы забрать свой подарок', icon: '🟢' },
-      received: { text: 'Подарок получен', icon: '⚫' }
+      not_seen: { text: 'Игра начата, но твой Санта пока не видел, что дарит тебе подарок', icon: '🟡', label: 'Санта еще не видел' },
+      chosen: { text: 'Санта выбирает подарок', icon: '🟣', label: 'Санта выбирает' },
+      bought: { text: 'Подарок куплен', icon: '🔵', label: 'Подарок куплен' },
+      shipping: { text: 'Подарок в пути', icon: '🟠', label: 'Подарок в пути' },
+      ready: { text: 'Подарок готов к выдаче. Напишите в ветку, когда будете готовы забрать свой подарок', icon: '🟢', label: 'Готов к выдаче' },
+      received: { text: 'Подарок получен', icon: '⚫', label: 'Подарок получен' }
     };
 
     // Авто-закрытие приветствия через 2 секунды
@@ -425,7 +423,6 @@
       const result = await api('get-santa', { telegram_id: user.id });
 
       if (result.error === 'Ты ещё не зарегистрирован') {
-        // Показываем регистрацию
         document.getElementById('screen-register').classList.remove('hidden');
         document.getElementById('screen-main').classList.add('hidden');
 
@@ -440,7 +437,6 @@
         return;
       }
 
-      // Уже зарегистрирован — показываем главную
       myData = result.me;
       assignedData = result.assigned;
       isAdmin = myData.is_admin;
@@ -521,12 +517,22 @@
       setTimeout(function() { location.reload(); }, 800);
     }
 
+    // ФУНКЦИЯ АВТОССЫЛКИ
+    function linkify(text) {
+      if (!text) return '';
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlRegex, function(url) {
+        return '<a href="' + url + '" target="_blank" style="color: #F1C40F; text-decoration: underline; font-weight: bold;">Ссылка на товар 🔗</a>';
+      });
+    }
+
     function renderMain() {
       const myStatus = myData.gift_status || 'not_seen';
       const statusInfo = STATUS_LABELS[myStatus] || STATUS_LABELS.not_seen;
 
       let html = '';
-      html += '<div class="status-badge status-' + myStatus + '">' + statusInfo.icon + ' ' + myStatus.replace('_', ' ') + '</div>';
+      // Русский текст в бейджике
+      html += '<div class="status-badge status-' + myStatus + '">' + statusInfo.icon + ' ' + statusInfo.label + '</div>';
       html += '<div class="status-text">' + statusInfo.text + '</div>';
 
       const statusOrder = ['not_seen', 'chosen', 'bought', 'shipping', 'ready', 'received'];
@@ -547,7 +553,8 @@
         aHtml += '<div class="info">' + assignedData.first_name + ' ' + assignedData.last_name + '</div>';
 
         if (assignedData.wishes) {
-          aHtml += '<div class="info"><b>Пожелания:</b> ' + assignedData.wishes + '</div>';
+          // Применяем linkify к пожеланиям
+          aHtml += '<div class="info"><b>Пожелания:</b> ' + linkify(assignedData.wishes) + '</div>';
         }
 
         if (assignedData.ozon_address) {
@@ -562,21 +569,23 @@
 
         const myGiftStatus = myData.gift_status || 'not_seen';
         aHtml += '<div style="margin-top:10px; font-size:13px; opacity:0.9;">';
-        aHtml += 'Твой статус подарка: <b>' + myGiftStatus.replace('_', ' ') + '</b>';
+        // Русский текст статуса подарка
+        aHtml += 'Твой статус подарка: <b>' + (STATUS_LABELS[myGiftStatus] ? STATUS_LABELS[myGiftStatus].label : myGiftStatus) + '</b>';
         aHtml += '</div>';
 
-        aHtml += '<div style="margin-top:12px;">';
+        aHtml += '<div style="margin-top:16px;">';
         if (myGiftStatus === 'not_seen' || myGiftStatus === 'chosen') {
-          aHtml += '<button class="btn btn-small" onclick="setStatus(\'chosen\')" style="background: rgba(255,255,255,0.3);">🟣 Выбираю</button>';
+          aHtml += '<button class="btn btn-small" onclick="setStatus(\'chosen\')" style="background: #9B59B6; box-shadow: 0 4px 12px rgba(155,89,182,0.4);">🟣 Выбираю</button>';
         }
         if (myGiftStatus === 'chosen' || myGiftStatus === 'bought') {
-          aHtml += '<button class="btn btn-small" onclick="setStatus(\'bought\')" style="background: rgba(255,255,255,0.3);">🔵 Куплен</button>';
+          aHtml += '<button class="btn btn-small" onclick="setStatus(\'bought\')" style="background: #3498DB; box-shadow: 0 4px 12px rgba(52,152,219,0.4);">🔵 Куплен</button>';
         }
         if (myGiftStatus === 'bought' || myGiftStatus === 'shipping') {
-          aHtml += '<button class="btn btn-small" onclick="setStatus(\'shipping\')" style="background: rgba(255,255,255,0.3);">🟠 В пути</button>';
+          aHtml += '<button class="btn btn-small" onclick="setStatus(\'shipping\')" style="background: #E67E22; box-shadow: 0 4px 12px rgba(230,126,34,0.4);">🟠 В пути</button>';
         }
         if (myGiftStatus === 'shipping' || myGiftStatus === 'ready') {
-          aHtml += '<button class="btn btn-small" onclick="setStatus(\'ready\')" style="background: rgba(255,255,255,0.3);">🟢 Готов к выдаче</button>';
+          // Сделали кнопку более заметной и по центру
+          aHtml += '<button class="btn btn-small btn-green" onclick="setStatus(\'ready\')">🟢 Готов к выдаче</button>';
         }
         aHtml += '</div>';
 
@@ -613,10 +622,11 @@
 
       let html = '';
       result.santas.forEach(function(s) {
+        const sLabel = STATUS_LABELS[s.gift_status] ? STATUS_LABELS[s.gift_status].label : (s.gift_status || 'not_seen');
         html += '<div class="admin-row">';
         html += '<div class="nick">' + s.nickname + (s.is_admin ? ' 👑' : '') + '</div>';
         html += '<div class="assign">' + (s.assigned_nickname ? '→ ' + s.assigned_nickname : '→ (не назначен)') + '</div>';
-        html += '<div class="assign">Статус: ' + (s.gift_status || 'not_seen') + '</div>';
+        html += '<div class="assign">Статус: ' + sLabel + '</div>';
         if (!s.is_admin) {
           html += '<button class="admin-promote-btn" onclick="makeAdmin(' + s.telegram_id + ', \'' + s.nickname + '\')">👑 Сделать админом</button>';
         }
