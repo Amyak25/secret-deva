@@ -28,11 +28,28 @@ module.exports = async (req, res) => {
 
     const sql = neon(process.env.DATABASE_URL);
 
+    // Проверяем, открыта ли регистрация
+    const settings = await sql`SELECT registration_end FROM settings WHERE id = 1`;
+    if (settings.length > 0) {
+      const regEnd = new Date(settings[0].registration_end + 'Z');
+      if (new Date() > regEnd) {
+        // Регистрация закрыта. Пропускаем только тех, кто уже есть в базе
+        const existing = await sql`
+          SELECT id FROM santas WHERE telegram_id = ${telegramIdNum}
+        `;
+        if (existing.length === 0) {
+          return res.status(403).json({ error: 'Регистрация закрыта' });
+        }
+      }
+    }
+
+    // Проверяем, есть ли игрок в базе
     const existing = await sql`
       SELECT id, is_admin FROM santas WHERE telegram_id = ${telegramIdNum}
     `;
 
     if (existing.length > 0) {
+      // Обновляем профиль
       await sql`
         UPDATE santas
         SET nickname = ${nickname},
@@ -52,6 +69,7 @@ module.exports = async (req, res) => {
       });
     }
 
+    // Создаём нового
     const result = await sql`
       INSERT INTO santas (
         telegram_id, nickname, first_name, last_name, phone,
