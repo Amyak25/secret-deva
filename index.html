@@ -96,7 +96,6 @@
     .btn-blue { background: linear-gradient(135deg, #3498DB, #2980B9); box-shadow: 0 4px 12px rgba(52,152,219,0.4); }
     .btn-grey { background: linear-gradient(135deg, #95A5A6, #7F8C8D); box-shadow: 0 4px 12px rgba(149,165,166,0.4); }
     
-    /* НОВЫЙ СТИЛЬ ДЛЯ КНОПОК СТАТУСА */
     .btn-status {
       padding: 12px 20px;
       font-size: 14px;
@@ -135,7 +134,7 @@
       border-radius: 20px;
       margin-bottom: 14px;
       box-shadow: 0 6px 20px rgba(231,76,60,0.4);
-      text-align: center; /* Центрируем всё внутри */
+      text-align: center;
     }
     .assign-card h2 { font-size: 22px; margin-bottom: 10px; text-align: left; }
     .assign-card .info { font-size: 14px; line-height: 1.6; margin-bottom: 10px; text-align: left; }
@@ -586,7 +585,6 @@
 
         aHtml += '<div style="margin-top:16px;">';
         
-        // ИСПОЛЬЗУЕМ НОВЫЙ КЛАСС btn-status И ЯВНЫЕ ЦВЕТА
         if (myGiftStatus === 'not_seen' || myGiftStatus === 'chosen') {
           aHtml += '<button class="btn-status" onclick="setStatus(\'chosen\')" style="background: #9B59B6;">🟣 Выбираю подарок</button><br>';
         }
