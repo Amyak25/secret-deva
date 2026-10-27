@@ -233,7 +233,8 @@
     };
 
     setTimeout(function() {
-      document.getElementById('welcome-screen').classList.add('hidden');
+      const welcome = document.getElementById('welcome-screen');
+      welcome.classList.add('hidden');
       document.getElementById('app-container').style.display = 'block';
       showRegistrationOrMain();
     }, 2000);
@@ -462,6 +463,36 @@
     window.makeAdmin = async function(telegramId, nickname) {
       if (!confirm('Сделать ' + nickname + ' админом?')) return;
       try {
-        const res = await fetch('/api/make-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ admin_id: currentUser.id, target_id: telegramId }) });
+        const res = await fetch('/api/make-admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id: currentUser.id, target_id: telegramId })
+        });
         const data = await res.json();
-        if (data.error) { showToast('Ошибка: ' + data.error);
+        if (data.error) { showToast('Ошибка: ' + data.error); return; }
+        showToast('✅ ' + nickname + ' теперь админ!');
+        setTimeout(function() { loadAdminList(); }, 500);
+      } catch (e) {
+        showToast('Ошибка: ' + e.message);
+      }
+    };
+
+    async function doDistribute() {
+      if (!confirm('Распределить всех Санта-Морозов? После этого изменить нельзя.')) return;
+      const result = await api('distribute', { admin_id: currentUser.id });
+      if (result.error) { showToast('Ошибка: ' + result.error); return; }
+      showToast('✅ Распределено!');
+      setTimeout(function() { location.reload(); }, 800);
+    }
+
+    async function doReset() {
+      if (!confirm('⚠️ Сбросить ВСЁ? Удалятся все участники и данные.')) return;
+      if (!confirm('Точно? Это необратимо!')) return;
+      const result = await api('reset-game', { admin_id: currentUser.id });
+      if (result.error) { showToast('Ошибка: ' + result.error); return; }
+      showToast('✅ Всё сброшено');
+      setTimeout(function() { location.reload(); }, 800);
+    }
+  </script>
+</body>
+</html>
