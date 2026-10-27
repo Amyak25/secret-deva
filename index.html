@@ -8,117 +8,50 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    
-    *::selection {
-      background: #E74C3C !important;
-      color: white !important;
-    }
-    *::-moz-selection {
-      background: #E74C3C !important;
-      color: white !important;
-    }
+    *::selection { background: #E74C3C !important; color: white !important; }
+    *::-moz-selection { background: #E74C3C !important; color: white !important; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-image: url('https://ivyofetwwhfrbkwyuzgr.supabase.co/storage/v1/object/public/photos/background.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-      min-height: 100vh;
-      color: #2C3E50;
-      padding-bottom: 20px;
+      background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;
+      min-height: 100vh; color: #2C3E50; padding-bottom: 20px;
     }
     .container { padding: 16px; max-width: 600px; margin: 0 auto; }
     .card {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 14px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px; padding: 20px; margin-bottom: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
       border: 1px solid rgba(255, 255, 255, 0.4);
     }
-    .header {
-      text-align: center;
-      padding: 20px;
-      color: white;
-      margin-bottom: 14px;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    }
+    .header { text-align: center; padding: 20px; color: white; margin-bottom: 14px; text-shadow: 0 2px 8px rgba(0,0,0,0.6); }
     .header h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
     .header p { font-size: 14px; opacity: 0.95; }
     .field { margin-bottom: 14px; }
     .field label { display: block; font-size: 13px; font-weight: 700; color: #34495E; margin-bottom: 6px; }
-    
     .field input, .field textarea {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid rgba(236,240,241,0.8);
-      border-radius: 10px;
-      font-size: 16px;
-      outline: none;
-      font-family: inherit;
-      background: #F2F4F5;
-      color: #2C3E50;
-      -webkit-text-fill-color: #2C3E50;
+      width: 100%; padding: 12px; border: 2px solid rgba(236,240,241,0.8); border-radius: 10px;
+      font-size: 16px; outline: none; font-family: inherit; background: #F2F4F5; color: #2C3E50; -webkit-text-fill-color: #2C3E50;
     }
-    
-    .field input:focus, .field textarea:focus { 
-      border-color: #3498DB;
-      background: #FFFFFF;
-      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
-    }
-    
-    .field input::placeholder, .field textarea::placeholder {
-      color: #95A5A6;
-      opacity: 1;
-    }
-    
+    .field input:focus, .field textarea:focus { border-color: #3498DB; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3); }
+    .field input::placeholder, .field textarea::placeholder { color: #95A5A6; opacity: 1; }
     .field textarea { min-height: 80px; resize: vertical; }
     .required { color: #E74C3C; }
+    
     .btn {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #E74C3C, #C0392B);
-      color: white;
-      border: none;
-      border-radius: 14px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 10px;
+      width: 100%; padding: 15px; background: linear-gradient(135deg, #E74C3C, #C0392B); color: white;
+      border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px;
       box-shadow: 0 4px 12px rgba(231,76,60,0.4);
     }
-    .btn:disabled { opacity: 0.5; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; background: #95A5A6; box-shadow: none; }
     .btn-green { background: linear-gradient(135deg, #27AE60, #229954); box-shadow: 0 4px 12px rgba(39,174,96,0.4); }
-    .btn-blue { background: linear-gradient(135deg, #3498DB, #2980B9); box-shadow: 0 4px 12px rgba(52,152,219,0.4); }
     .btn-grey { background: linear-gradient(135deg, #95A5A6, #7F8C8D); box-shadow: 0 4px 12px rgba(149,165,166,0.4); }
     
     .btn-status {
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: 700;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      color: white;
-      display: inline-block;
-      width: 100%;
-      max-width: 300px;
-      margin-bottom: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      padding: 12px 20px; font-size: 14px; font-weight: 700; border: none; border-radius: 12px; cursor: pointer;
+      color: white; display: inline-block; width: 100%; max-width: 300px; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 
-    .status-badge {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      margin: 4px 0;
-    }
+    .status-badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin: 4px 0; }
     .status-not_seen { background: #F39C12; color: white; }
     .status-chosen { background: #9B59B6; color: white; }
     .status-bought { background: #3498DB; color: white; }
@@ -128,13 +61,8 @@
     .status-text { font-size: 13px; color: #7F8C8D; margin-top: 6px; line-height: 1.4; }
     
     .assign-card {
-      background: linear-gradient(135deg, #E74C3C, #C0392B);
-      color: white;
-      padding: 20px;
-      border-radius: 20px;
-      margin-bottom: 14px;
-      box-shadow: 0 6px 20px rgba(231,76,60,0.4);
-      text-align: center;
+      background: linear-gradient(135deg, #E74C3C, #C0392B); color: white; padding: 20px;
+      border-radius: 20px; margin-bottom: 14px; box-shadow: 0 6px 20px rgba(231,76,60,0.4); text-align: center;
     }
     .assign-card h2 { font-size: 22px; margin-bottom: 10px; text-align: left; }
     .assign-card .info { font-size: 14px; line-height: 1.6; margin-bottom: 10px; text-align: left; }
@@ -143,107 +71,48 @@
     .hidden { display: none !important; }
     .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
     .tab {
-      flex: 1;
-      padding: 10px;
-      background: rgba(255,255,255,0.3);
-      backdrop-filter: blur(8px);
-      color: white;
-      border-radius: 10px;
-      text-align: center;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+      flex: 1; padding: 10px; background: rgba(255,255,255,0.3); backdrop-filter: blur(8px); color: white;
+      border-radius: 10px; text-align: center; font-size: 13px; font-weight: 600; cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.5);
     }
     .tab.active { background: rgba(255,255,255,0.95); color: #E74C3C; text-shadow: none; }
-    .admin-row {
-      padding: 10px;
-      border-bottom: 1px solid rgba(236,240,241,0.6);
-      font-size: 13px;
-    }
+    
+    .admin-row { padding: 10px; border-bottom: 1px solid rgba(236,240,241,0.6); font-size: 13px; }
     .admin-row:last-child { border-bottom: none; }
     .admin-row .nick { font-weight: 700; }
     .admin-row .assign { color: #7F8C8D; font-size: 12px; }
+    
     .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #2C3E50;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-size: 14px;
-      z-index: 999;
-      display: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      max-width: 90%;
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2C3E50; color: white;
+      padding: 12px 24px; border-radius: 10px; font-size: 14px; z-index: 999; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3); max-width: 90%;
     }
     .toast.show { display: block; }
     .gift-progress { display: flex; gap: 4px; margin-top: 10px; }
     .gift-progress .step { flex: 1; height: 6px; background: rgba(236,240,241,0.7); border-radius: 3px; }
     .gift-progress .step.done { background: #27AE60; }
 
-    /* WELCOME SCREEN */
     .welcome-screen {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 9999;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;
       background-image: url('https://ivyofetwwhfrbkwyuzgr.supabase.co/storage/v1/object/public/photos/welcome.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 40px 20px;
-      transition: opacity 0.5s ease;
+      background-size: cover; background-position: center; background-repeat: no-repeat;
+      display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 40px 20px; transition: opacity 0.5s ease;
     }
     .welcome-screen.hidden { display: none; }
-    .welcome-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
-    }
-    .welcome-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      color: white;
-      width: 100%;
-    }
-    .welcome-title {
-      font-size: 36px;
-      font-weight: 800;
-      margin-bottom: 12px;
-      text-shadow: 0 3px 15px rgba(0,0,0,0.8);
-    }
-    .welcome-subtitle {
-      font-size: 16px;
-      margin-bottom: 30px;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-      opacity: 0.95;
-    }
+    .welcome-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%); }
+    .welcome-content { position: relative; z-index: 2; text-align: center; color: white; width: 100%; }
+    .welcome-title { font-size: 36px; font-weight: 800; margin-bottom: 12px; text-shadow: 0 3px 15px rgba(0,0,0,0.8); }
+    .welcome-subtitle { font-size: 16px; margin-bottom: 30px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); opacity: 0.95; }
 
-    /* ADMIN BUTTON */
-    .admin-promote-btn {
-      padding: 8px 14px;
-      background: #F39C12;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 6px;
-    }
+    .admin-promote-btn { padding: 8px 14px; background: #F39C12; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 6px; }
     .admin-promote-btn:active { background: #E67E22; }
+
+    .reg-timer {
+      text-align: center; padding: 12px; background: rgba(255, 255, 255, 0.95); border-radius: 14px;
+      margin-bottom: 14px; font-weight: 700; color: #E74C3C; box-shadow: 0 4px 12px rgba(231,76,60,0.3); font-size: 15px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- ПРИВЕТСТВЕННЫЙ ЭКРАН (2 сек) -->
   <div class="welcome-screen" id="welcome-screen">
     <div class="welcome-overlay"></div>
     <div class="welcome-content">
@@ -252,15 +121,15 @@
     </div>
   </div>
 
-  <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
   <div class="container" id="app-container" style="display:none;">
     <div class="header">
       <h1>🎅 Тайная Дева</h1>
       <p>Обменяйся подарками с друзьями!</p>
     </div>
 
-    <!-- РЕГИСТРАЦИЯ -->
     <div id="screen-register" class="hidden">
+      <div class="reg-timer" id="reg-timer">⏰ До конца регистрации: загрузка...</div>
+      
       <div class="card">
         <h2 style="margin-bottom: 14px;">📝 Регистрация</h2>
 
@@ -297,11 +166,10 @@
           <textarea id="reg-wishes" placeholder="Люблю книги, сладости, тёплые носки..."></textarea>
         </div>
 
-        <button class="btn" onclick="register()">Начать</button>
+        <button class="btn" id="reg-submit-btn" onclick="register()">Начать</button>
       </div>
     </div>
 
-    <!-- ГЛАВНЫЙ ЭКРАН -->
     <div id="screen-main" class="hidden">
       <div class="tabs">
         <div class="tab active" id="tab-main" onclick="showTab('main')">🎁 Главная</div>
@@ -320,38 +188,14 @@
       <div id="tab-content-profile" class="hidden">
         <div class="card">
           <h2 style="margin-bottom: 14px;">👤 Мой профиль</h2>
-          <div class="field">
-            <label>Имя</label>
-            <input type="text" id="prof-first-name">
-          </div>
-          <div class="field">
-            <label>Фамилия</label>
-            <input type="text" id="prof-last-name">
-          </div>
-          <div class="field">
-            <label>Телефон</label>
-            <input type="tel" id="prof-phone">
-          </div>
-          <div class="field">
-            <label>Ник в Telegram</label>
-            <input type="text" id="prof-nickname">
-          </div>
-          <div class="field">
-            <label>Адрес Озон</label>
-            <textarea id="prof-ozon"></textarea>
-          </div>
-          <div class="field">
-            <label>Адрес Wildberries</label>
-            <textarea id="prof-wb"></textarea>
-          </div>
-          <div class="field">
-            <label>Адрес СДЭК</label>
-            <textarea id="prof-cdek"></textarea>
-          </div>
-          <div class="field">
-            <label>Пожелания</label>
-            <textarea id="prof-wishes"></textarea>
-          </div>
+          <div class="field"><label>Имя</label><input type="text" id="prof-first-name"></div>
+          <div class="field"><label>Фамилия</label><input type="text" id="prof-last-name"></div>
+          <div class="field"><label>Телефон</label><input type="tel" id="prof-phone"></div>
+          <div class="field"><label>Ник в Telegram</label><input type="text" id="prof-nickname"></div>
+          <div class="field"><label>Адрес Озон</label><textarea id="prof-ozon"></textarea></div>
+          <div class="field"><label>Адрес Wildberries</label><textarea id="prof-wb"></textarea></div>
+          <div class="field"><label>Адрес СДЭК</label><textarea id="prof-cdek"></textarea></div>
+          <div class="field"><label>Пожелания</label><textarea id="prof-wishes"></textarea></div>
           <button class="btn" onclick="updateProfile()">Обновить</button>
         </div>
       </div>
@@ -374,13 +218,10 @@
 
   <script>
     const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+    tg.ready(); tg.expand();
 
-    let currentUser = null;
-    let myData = null;
-    let assignedData = null;
-    let isAdmin = false;
+    let currentUser = null, myData = null, assignedData = null, isAdmin = false;
+    let regTimerInterval = null;
 
     const STATUS_LABELS = {
       not_seen: { text: 'Игра начата, но твой Санта пока не видел, что дарит тебе подарок', icon: '🟡', label: 'Санта еще не видел' },
@@ -392,64 +233,64 @@
     };
 
     setTimeout(function() {
-      const welcome = document.getElementById('welcome-screen');
-      welcome.classList.add('hidden');
+      document.getElementById('welcome-screen').classList.add('hidden');
       document.getElementById('app-container').style.display = 'block';
       showRegistrationOrMain();
     }, 2000);
 
     async function api(path, body) {
-      const res = await fetch('/api/' + path, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body || {})
-      });
+      const res = await fetch('/api/' + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) });
+      return res.json();
+    }
+
+    async function apiGet(path) {
+      const res = await fetch('/api/' + path);
       return res.json();
     }
 
     function showToast(msg) {
       const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
+      t.textContent = msg; t.classList.add('show');
       setTimeout(function() { t.classList.remove('show'); }, 2500);
     }
 
     function showTab(tab) {
       document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
       document.getElementById('tab-' + tab).classList.add('active');
-      document.getElementById('tab-content-main').classList.add('hidden');
-      document.getElementById('tab-content-profile').classList.add('hidden');
-      document.getElementById('tab-content-admin').classList.add('hidden');
+      ['main', 'profile', 'admin'].forEach(function(t) { document.getElementById('tab-content-' + t).classList.add('hidden'); });
       document.getElementById('tab-content-' + tab).classList.remove('hidden');
-
       if (tab === 'admin') loadAdminList();
     }
 
     async function showRegistrationOrMain() {
       const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
-      if (!user) {
-        document.body.innerHTML = '<div style="padding:40px;text-align:center;color:white;font-size:18px;">Открой через Telegram</div>';
-        return;
-      }
-
+      if (!user) { document.body.innerHTML = '<div style="padding:40px;text-align:center;color:white;font-size:18px;">Открой через Telegram</div>'; return; }
       currentUser = user;
 
       const result = await api('get-santa', { telegram_id: user.id });
 
       if (result.error === 'Ты ещё не зарегистрирован') {
+        const settings = await apiGet('get-settings');
+        
         document.getElementById('screen-register').classList.remove('hidden');
         document.getElementById('screen-main').classList.add('hidden');
+
+        if (!settings.is_open) {
+          document.getElementById('reg-timer').textContent = '🔒 Регистрация закрыта';
+          document.getElementById('reg-submit-btn').disabled = true;
+          document.getElementById('reg-submit-btn').textContent = 'Регистрация закрыта';
+          return;
+        }
 
         if (user.first_name) document.getElementById('reg-first-name').value = user.first_name;
         if (user.last_name) document.getElementById('reg-last-name').value = user.last_name;
         if (user.username) document.getElementById('reg-nickname').value = '@' + user.username;
+
+        startRegTimer(settings.seconds_left);
         return;
       }
 
-      if (result.error) {
-        showToast('Ошибка: ' + result.error);
-        return;
-      }
+      if (result.error) { showToast('Ошибка: ' + result.error); return; }
 
       myData = result.me;
       assignedData = result.assigned;
@@ -458,12 +299,38 @@
       document.getElementById('screen-register').classList.add('hidden');
       document.getElementById('screen-main').classList.remove('hidden');
 
-      if (isAdmin) {
-        document.getElementById('tab-admin').classList.remove('hidden');
-      }
+      if (isAdmin) document.getElementById('tab-admin').classList.remove('hidden');
 
       renderMain();
       fillProfile();
+    }
+
+    function startRegTimer(secondsLeft) {
+      const timerEl = document.getElementById('reg-timer');
+      let remaining = secondsLeft;
+
+      function update() {
+        if (remaining <= 0) {
+          clearInterval(regTimerInterval);
+          timerEl.textContent = '🔒 Регистрация закрыта';
+          document.getElementById('reg-submit-btn').disabled = true;
+          document.getElementById('reg-submit-btn').textContent = 'Регистрация закрыта';
+          return;
+        }
+        const days = Math.floor(remaining / 86400);
+        const hours = Math.floor((remaining % 86400) / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+
+        let text = '⏰ До конца регистрации: ';
+        if (days > 0) text += days + ' д ' + hours + ' ч';
+        else if (hours > 0) text += hours + ' ч ' + minutes + ' мин';
+        else text += minutes + ' мин';
+
+        timerEl.textContent = text;
+        remaining -= 60;
+      }
+      update();
+      regTimerInterval = setInterval(update, 60000);
     }
 
     async function register() {
@@ -476,27 +343,14 @@
       const cdek = document.getElementById('reg-cdek').value.trim();
       const wishes = document.getElementById('reg-wishes').value.trim();
 
-      if (!firstName || !lastName || !phone || !nickname) {
-        showToast('Заполни обязательные поля');
-        return;
-      }
+      if (!firstName || !lastName || !phone || !nickname) { showToast('Заполни обязательные поля'); return; }
 
       const result = await api('register-santa', {
-        telegram_id: currentUser.id,
-        nickname: nickname,
-        first_name: firstName,
-        last_name: lastName,
-        phone: phone,
-        ozon_address: ozon,
-        wb_address: wb,
-        cdek_address: cdek,
-        wishes: wishes
+        telegram_id: currentUser.id, nickname: nickname, first_name: firstName, last_name: lastName,
+        phone: phone, ozon_address: ozon, wb_address: wb, cdek_address: cdek, wishes: wishes
       });
 
-      if (result.error) {
-        showToast('Ошибка: ' + result.error);
-        return;
-      }
+      if (result.error) { showToast('Ошибка: ' + result.error); return; }
 
       showToast('✅ Сохранено!');
       setTimeout(function() { location.reload(); }, 800);
@@ -525,7 +379,6 @@
         cdek_address: document.getElementById('prof-cdek').value.trim(),
         wishes: document.getElementById('prof-wishes').value.trim()
       });
-
       if (result.error) { showToast('Ошибка: ' + result.error); return; }
       showToast('✅ Обновлено!');
       setTimeout(function() { location.reload(); }, 800);
@@ -543,77 +396,45 @@
       const myStatus = myData.gift_status || 'not_seen';
       const statusInfo = STATUS_LABELS[myStatus] || STATUS_LABELS.not_seen;
 
-      let html = '';
-      html += '<div class="status-badge status-' + myStatus + '">' + statusInfo.icon + ' ' + statusInfo.label + '</div>';
+      let html = '<div class="status-badge status-' + myStatus + '">' + statusInfo.icon + ' ' + statusInfo.label + '</div>';
       html += '<div class="status-text">' + statusInfo.text + '</div>';
 
       const statusOrder = ['not_seen', 'chosen', 'bought', 'shipping', 'ready', 'received'];
       const currentIdx = statusOrder.indexOf(myStatus);
       html += '<div class="gift-progress">';
-      for (let i = 0; i < 6; i++) {
-        html += '<div class="step ' + (i <= currentIdx ? 'done' : '') + '"></div>';
-      }
+      for (let i = 0; i < 6; i++) html += '<div class="step ' + (i <= currentIdx ? 'done' : '') + '"></div>';
       html += '</div>';
 
       document.getElementById('my-gift-status').innerHTML = html;
 
       if (assignedData) {
-        let aHtml = '';
-        aHtml += '<div class="assign-card">';
+        let aHtml = '<div class="assign-card">';
         aHtml += '<h2>🎅 Твой подопечный</h2>';
         aHtml += '<div class="info"><b>' + assignedData.nickname + '</b></div>';
         aHtml += '<div class="info">' + assignedData.first_name + ' ' + assignedData.last_name + '</div>';
-
-        if (assignedData.wishes) {
-          aHtml += '<div class="info"><b>Пожелания:</b> ' + linkify(assignedData.wishes) + '</div>';
-        }
-
-        if (assignedData.ozon_address) {
-          aHtml += '<div class="address"><b>Озон:</b> ' + assignedData.ozon_address + '</div>';
-        }
-        if (assignedData.wb_address) {
-          aHtml += '<div class="address"><b>WB:</b> ' + assignedData.wb_address + '</div>';
-        }
-        if (assignedData.cdek_address) {
-          aHtml += '<div class="address"><b>СДЭК:</b> ' + assignedData.cdek_address + '</div>';
-        }
+        if (assignedData.wishes) aHtml += '<div class="info"><b>Пожелания:</b> ' + linkify(assignedData.wishes) + '</div>';
+        if (assignedData.ozon_address) aHtml += '<div class="address"><b>Озон:</b> ' + assignedData.ozon_address + '</div>';
+        if (assignedData.wb_address) aHtml += '<div class="address"><b>WB:</b> ' + assignedData.wb_address + '</div>';
+        if (assignedData.cdek_address) aHtml += '<div class="address"><b>СДЭК:</b> ' + assignedData.cdek_address + '</div>';
 
         const myGiftStatus = myData.gift_status || 'not_seen';
-        aHtml += '<div style="margin-top:10px; font-size:13px; opacity:0.9;">';
-        aHtml += 'Твой статус подарка: <b>' + (STATUS_LABELS[myGiftStatus] ? STATUS_LABELS[myGiftStatus].label : myGiftStatus) + '</b>';
-        aHtml += '</div>';
+        aHtml += '<div style="margin-top:10px; font-size:13px; opacity:0.9;">Твой статус подарка: <b>' + (STATUS_LABELS[myGiftStatus] ? STATUS_LABELS[myGiftStatus].label : myGiftStatus) + '</b></div>';
 
         aHtml += '<div style="margin-top:16px;">';
-        
-        if (myGiftStatus === 'not_seen' || myGiftStatus === 'chosen') {
-          aHtml += '<button class="btn-status" onclick="setStatus(\'chosen\')" style="background: #9B59B6;">🟣 Выбираю подарок</button><br>';
-        }
-        if (myGiftStatus === 'chosen' || myGiftStatus === 'bought') {
-          aHtml += '<button class="btn-status" onclick="setStatus(\'bought\')" style="background: #3498DB;">🔵 Подарок куплен</button><br>';
-        }
-        if (myGiftStatus === 'bought' || myGiftStatus === 'shipping') {
-          aHtml += '<button class="btn-status" onclick="setStatus(\'shipping\')" style="background: #E67E22;">🟠 Подарок в пути</button><br>';
-        }
-        if (myGiftStatus === 'shipping' || myGiftStatus === 'ready') {
-          aHtml += '<button class="btn-status" onclick="setStatus(\'ready\')" style="background: #27AE60;">🟢 Готов к выдаче</button>';
-        }
-        aHtml += '</div>';
+        if (myGiftStatus === 'not_seen' || myGiftStatus === 'chosen') aHtml += '<button class="btn-status" onclick="setStatus(\'chosen\')" style="background: #9B59B6;">🟣 Выбираю подарок</button><br>';
+        if (myGiftStatus === 'chosen' || myGiftStatus === 'bought') aHtml += '<button class="btn-status" onclick="setStatus(\'bought\')" style="background: #3498DB;">🔵 Подарок куплен</button><br>';
+        if (myGiftStatus === 'bought' || myGiftStatus === 'shipping') aHtml += '<button class="btn-status" onclick="setStatus(\'shipping\')" style="background: #E67E22;">🟠 Подарок в пути</button><br>';
+        if (myGiftStatus === 'shipping' || myGiftStatus === 'ready') aHtml += '<button class="btn-status" onclick="setStatus(\'ready\')" style="background: #27AE60;">🟢 Готов к выдаче</button>';
+        aHtml += '</div></div>';
 
-        aHtml += '</div>';
         document.getElementById('assignment-block').innerHTML = aHtml;
       } else {
-        document.getElementById('assignment-block').innerHTML =
-          '<div class="card"><div style="text-align:center; color:#7F8C8D; padding:20px;">' +
-          '⏳ Идёт регистрация. Ждём, когда админ распределит Санту!' +
-          '</div></div>';
+        document.getElementById('assignment-block').innerHTML = '<div class="card"><div style="text-align:center; color:#7F8C8D; padding:20px;">⏳ Идёт регистрация. Ждём, когда админ распределит Санту!</div></div>';
       }
     }
 
     async function setStatus(newStatus) {
-      const result = await api('update-gift-status', {
-        telegram_id: currentUser.id,
-        new_status: newStatus
-      });
+      const result = await api('update-gift-status', { telegram_id: currentUser.id, new_status: newStatus });
       if (result.error) { showToast('Ошибка: ' + result.error); return; }
       showToast('✅ Статус обновлён');
       setTimeout(function() { location.reload(); }, 600);
@@ -622,14 +443,9 @@
     async function loadAdminList() {
       const list = document.getElementById('admin-all-list');
       list.innerHTML = 'Загрузка...';
-
       const result = await api('get-all-santas', { admin_id: currentUser.id });
-
-      if (result.error) {
-        list.innerHTML = '<div style="color:#E74C3C;">Ошибка: ' + result.error + '</div>';
-        return;
-      }
-
+      if (result.error) { list.innerHTML = '<div style="color:#E74C3C;">Ошибка: ' + result.error + '</div>'; return; }
+      
       let html = '';
       result.santas.forEach(function(s) {
         const sLabel = STATUS_LABELS[s.gift_status] ? STATUS_LABELS[s.gift_status].label : (s.gift_status || 'not_seen');
@@ -637,9 +453,7 @@
         html += '<div class="nick">' + s.nickname + (s.is_admin ? ' 👑' : '') + '</div>';
         html += '<div class="assign">' + (s.assigned_nickname ? '→ ' + s.assigned_nickname : '→ (не назначен)') + '</div>';
         html += '<div class="assign">Статус: ' + sLabel + '</div>';
-        if (!s.is_admin) {
-          html += '<button class="admin-promote-btn" onclick="makeAdmin(' + s.telegram_id + ', \'' + s.nickname + '\')">👑 Сделать админом</button>';
-        }
+        if (!s.is_admin) html += '<button class="admin-promote-btn" onclick="makeAdmin(' + s.telegram_id + ', \'' + s.nickname + '\')">👑 Сделать админом</button>';
         html += '</div>';
       });
       list.innerHTML = html;
@@ -647,43 +461,7 @@
 
     window.makeAdmin = async function(telegramId, nickname) {
       if (!confirm('Сделать ' + nickname + ' админом?')) return;
-
       try {
-        const res = await fetch('/api/make-admin', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            admin_id: currentUser.id,
-            target_id: telegramId
-          })
-        });
+        const res = await fetch('/api/make-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ admin_id: currentUser.id, target_id: telegramId }) });
         const data = await res.json();
-        if (data.error) { showToast('Ошибка: ' + data.error); return; }
-        showToast('✅ ' + nickname + ' теперь админ!');
-        setTimeout(function() { loadAdminList(); }, 500);
-      } catch (e) {
-        showToast('Ошибка: ' + e.message);
-      }
-    };
-
-    async function doDistribute() {
-      if (!confirm('Распределить всех Санта-Морозов? После этого изменить нельзя.')) return;
-
-      const result = await api('distribute', { admin_id: currentUser.id });
-      if (result.error) { showToast('Ошибка: ' + result.error); return; }
-      showToast('✅ Распределено!');
-      setTimeout(function() { location.reload(); }, 800);
-    }
-
-    async function doReset() {
-      if (!confirm('⚠️ Сбросить ВСЁ? Удалятся все участники и данные.')) return;
-      if (!confirm('Точно? Это необратимо!')) return;
-
-      const result = await api('reset-game', { admin_id: currentUser.id });
-      if (result.error) { showToast('Ошибка: ' + result.error); return; }
-      showToast('✅ Всё сброшено');
-      setTimeout(function() { location.reload(); }, 800);
-    }
-  </script>
-</body>
-</html>
+        if (data.error) { showToast('Ошибка: ' + data.error);
