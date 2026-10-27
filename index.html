@@ -127,6 +127,9 @@
       <p>Обменяйся подарками с друзьями!</p>
     </div>
 
+    <!-- ТАЙМЕР НА ГЛАВНОМ ЭКРАНЕ -->
+    <div class="reg-timer" id="main-reg-timer" style="display: none;">⏰ До конца регистрации: ...</div>
+
     <div id="screen-register" class="hidden">
       <div class="reg-timer" id="reg-timer">⏰ До конца регистрации: загрузка...</div>
       
@@ -222,6 +225,7 @@
 
     let currentUser = null, myData = null, assignedData = null, isAdmin = false;
     let regTimerInterval = null;
+    let mainRegTimerInterval = null;
 
     const STATUS_LABELS = {
       not_seen: { text: 'Игра начата, но твой Санта пока не видел, что дарит тебе подарок', icon: '🟡', label: 'Санта еще не видел' },
@@ -304,6 +308,46 @@
 
       renderMain();
       fillProfile();
+      loadMainTimer(); // Запускаем таймер на главном
+    }
+
+    async function loadMainTimer() {
+      const settings = await apiGet('get-settings');
+      const timerEl = document.getElementById('main-reg-timer');
+      
+      if (settings.is_open) {
+        timerEl.style.display = 'block';
+        startMainTimer(settings.seconds_left);
+      } else {
+        timerEl.style.display = 'block';
+        timerEl.textContent = '🔒 Регистрация закрыта';
+      }
+    }
+
+    function startMainTimer(secondsLeft) {
+      const timerEl = document.getElementById('main-reg-timer');
+      let remaining = secondsLeft;
+
+      function update() {
+        if (remaining <= 0) {
+          clearInterval(mainRegTimerInterval);
+          timerEl.textContent = '🔒 Регистрация закрыта';
+          return;
+        }
+        const days = Math.floor(remaining / 86400);
+        const hours = Math.floor((remaining % 86400) / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+
+        let text = '⏰ До конца регистрации: ';
+        if (days > 0) text += days + ' д ' + hours + ' ч';
+        else if (hours > 0) text += hours + ' ч ' + minutes + ' мин';
+        else text += minutes + ' мин';
+
+        timerEl.textContent = text;
+        remaining -= 60;
+      }
+      update();
+      mainRegTimerInterval = setInterval(update, 60000);
     }
 
     function startRegTimer(secondsLeft) {
