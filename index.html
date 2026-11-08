@@ -209,7 +209,7 @@
           <button class="btn btn-grey" onclick="doReset()" style="margin-top: 10px;">🗑️ Сбросить всё</button>
         </div>
         <div class="card">
-          <h2 style="margin-bottom: 10px;">👥 Все участники</h2>
+          <h2 style="margin-bottom: 10px;" id="admin-participants-title">👥 Все участники</h2>
           <div id="admin-all-list">Загрузка...</div>
         </div>
       </div>
@@ -490,6 +490,11 @@
       const result = await api('get-all-santas', { admin_id: currentUser.id });
       if (result.error) { list.innerHTML = '<div style="color:#E74C3C;">Ошибка: ' + result.error + '</div>'; return; }
       
+      const titleEl = document.getElementById('admin-participants-title');
+      if (titleEl) {
+        titleEl.textContent = '👥 Все участники (' + result.santas.length + ')';
+      }
+
       let html = '';
       result.santas.forEach(function(s) {
         const sLabel = STATUS_LABELS[s.gift_status] ? STATUS_LABELS[s.gift_status].label : (s.gift_status || 'not_seen');
