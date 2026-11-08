@@ -13,7 +13,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-image: url('https://ivyofetwwhfrbkwyuzgr.supabase.co/storage/v1/object/public/photos/background.jpg');
+      background-image: url('images/background.jpg');
       background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;
       min-height: 100vh; color: #2C3E50; padding-bottom: 20px;
     }
@@ -92,7 +92,7 @@
 
     .welcome-screen {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;
-      background-image: url('https://ivyofetwwhfrbkwyuzgr.supabase.co/storage/v1/object/public/photos/welcome.jpg');
+      background-image: url('images/welcome.jpg');
       background-size: cover; background-position: center; background-repeat: no-repeat;
       display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 40px 20px; transition: opacity 0.5s ease;
     }
@@ -127,7 +127,6 @@
       <p>Обменяйся подарками с друзьями!</p>
     </div>
 
-    <!-- ТАЙМЕР НА ГЛАВНОМ ЭКРАНЕ -->
     <div class="reg-timer" id="main-reg-timer" style="display: none;">⏰ До конца регистрации: ...</div>
 
     <div id="screen-register" class="hidden">
@@ -308,7 +307,7 @@
 
       renderMain();
       fillProfile();
-      loadMainTimer(); // Запускаем таймер на главном
+      loadMainTimer();
     }
 
     async function loadMainTimer() {
