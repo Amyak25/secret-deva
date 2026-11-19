@@ -28,27 +28,22 @@ module.exports = async (req, res) => {
       return res.status(403).json({ error: 'Нет прав' });
     }
 
-    // Все участники
+    // Все участники (включая админов и наблюдателя)
     const all = await sql`
       SELECT telegram_id, nickname, first_name, last_name, 
-             assigned_to, gift_status, is_admin
+             assigned_to, gift_status, is_admin, is_observer
       FROM santas
       ORDER BY created_at ASC
     `;
 
-    // Создаём словарь: telegram_id -> nickname
     const idToNick = {};
     all.forEach(function(s) {
       idToNick[s.telegram_id] = s.nickname;
     });
 
-    // Формируем ответ — НО скрываем "кому попался сам админ"
     const result = all.map(function(s) {
       let assignedNickname = null;
-
       if (s.assigned_to) {
-        // Скрываем, если это подопечный самого админа, который делает запрос
-        // То есть: если assigned_to = admin_id, не показываем
         if (s.assigned_to === adminIdNum) {
           assignedNickname = '🙈 (скрыто)';
         } else {
@@ -63,6 +58,7 @@ module.exports = async (req, res) => {
         last_name: s.last_name,
         gift_status: s.gift_status,
         is_admin: s.is_admin,
+        is_observer: s.is_observer,
         assigned_to: s.assigned_to,
         assigned_nickname: assignedNickname
       };
