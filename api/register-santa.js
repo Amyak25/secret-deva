@@ -29,7 +29,6 @@ module.exports = async (req, res) => {
     const sql = neon(process.env.DATABASE_URL);
 
     // ===== ПРОВЕРКА НА ГЛАВНОГО АДМИНА-НАБЛЮДАТЕЛЯ =====
-    // Если это твой ID, мы даем тебе права админа и наблюдателя
     const isMainAdmin = (telegramIdNum === 827232068);
 
     const existing = await sql`
@@ -38,6 +37,10 @@ module.exports = async (req, res) => {
 
     if (existing.length > 0) {
       // Обновляем профиль
+      // ВАЖНО: сохраняем существующие права, но для главного админа принудительно ставим is_observer = TRUE
+      const newIsAdmin = existing[0].is_admin || isMainAdmin;
+      const newIsObserver = isMainAdmin ? true : existing[0].is_observer;
+
       await sql`
         UPDATE santas
         SET nickname = ${nickname},
@@ -47,12 +50,15 @@ module.exports = async (req, res) => {
             ozon_address = ${ozon_address},
             wb_address = ${wb_address},
             cdek_address = ${cdek_address},
-            wishes = ${wishes}
+            wishes = ${wishes},
+            is_admin = ${newIsAdmin},
+            is_observer = ${newIsObserver}
         WHERE telegram_id = ${telegramIdNum}
       `;
+      
       return res.status(200).json({
         registered: false,
-        is_admin: existing[0].is_admin,
+        is_admin: newIsAdmin,
         telegram_id: telegramIdNum
       });
     }
