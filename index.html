@@ -498,12 +498,44 @@
       let html = '';
       result.santas.forEach(function(s) {
         const sLabel = STATUS_LABELS[s.gift_status] ? STATUS_LABELS[s.gift_status].label : (s.gift_status || 'not_seen');
+        
         html += '<div class="admin-row">';
-        html += '<div class="nick">' + s.nickname + (s.is_admin ? ' 👑' : '') + '</div>';
-        html += '<div class="assign">' + (s.assigned_nickname ? '→ ' + s.assigned_nickname : '→ (не назначен)') + '</div>';
+        
+        // Ник и роль
+        let roleIcon = '';
+        if (s.is_observer) roleIcon = ' 👁️ (наблюдатель)';
+        else if (s.is_admin) roleIcon = ' 👑 (админ)';
+        
+        html += '<div class="nick">' + s.nickname + roleIcon + '</div>';
+        
+        // Кому попался
+        html += '<div class="assign">' + (s.assigned_nickname ? '🎁 Дарит: <b>' + s.assigned_nickname + '</b>' : '🎁 Дарит: (не назначен)') + '</div>';
+        
+        // Статус подарка
         html += '<div class="assign">Статус: ' + sLabel + '</div>';
-        if (!s.is_admin) html += '<button class="admin-promote-btn" onclick="makeAdmin(' + s.telegram_id + ', \'' + s.nickname + '\')">👑 Сделать админом</button>';
-        html += '</div>';
+
+        // Пожелания
+        if (s.wishes) {
+          html += '<div class="assign" style="background: rgba(255,255,255,0.6); padding: 6px; border-radius: 6px; margin-top: 4px;">💭 <i>' + s.wishes + '</i></div>';
+        } else {
+          html += '<div class="assign" style="color: #BDC3C7;">💭 (пожеланий нет)</div>';
+        }
+        
+        // Кнопки управления
+        html += '<div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">';
+        
+        // Кнопки для обычного игрока
+        if (!s.is_admin && !s.is_observer) {
+          html += '<button class="admin-promote-btn" onclick="makeAdmin(' + s.telegram_id + ', \'' + s.nickname + '\')">👑 Сделать админом</button>';
+          html += '<button class="admin-promote-btn" style="background: #E74C3C;" onclick="removeParticipant(' + s.telegram_id + ', \'' + s.nickname + '\')">🗑️ Удалить</button>';
+        }
+        
+        // Снять админку (если админ, но не ты и не наблюдатель)
+        if (s.is_admin && !s.is_observer && s.telegram_id !== currentUser.id) {
+          html += '<button class="admin-promote-btn" style="background: #95A5A6;" onclick="removeAdmin(' + s.telegram_id + ', \'' + s.nickname + '\')">⬇️ Снять админку</button>';
+        }
+        
+        html += '</div></div>';
       });
       list.innerHTML = html;
     }
@@ -514,11 +546,57 @@
         const res = await fetch('/api/make-admin', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id: currentUser.id, target_id: telegramId })
+          body: JSON.stringify({
+            admin_id: currentUser.id,
+            target_id: telegramId
+          })
         });
         const data = await res.json();
         if (data.error) { showToast('Ошибка: ' + data.error); return; }
         showToast('✅ ' + nickname + ' теперь админ!');
+        setTimeout(function() { loadAdminList(); }, 500);
+      } catch (e) {
+        showToast('Ошибка: ' + e.message);
+      }
+    };
+
+    window.removeAdmin = async function(telegramId, nickname) {
+      if (!confirm('Снять админку с ' + nickname + '? Он станет обычным игроком.')) return;
+      
+      try {
+        const res = await fetch('/api/remove-admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            admin_id: currentUser.id,
+            target_id: telegramId
+          })
+        });
+        const data = await res.json();
+        
+        if (data.error) { 
+          showToast('Ошибка: ' + data.error); 
+          return; 
+        }
+        
+        showToast('✅ ' + nickname + ' больше не админ');
+        setTimeout(function() { loadAdminList(); }, 500);
+      } catch (e) {
+        showToast('Ошибка: ' + e.message);
+      }
+    };
+
+    window.removeParticipant = async function(telegramId, nickname) {
+      if (!confirm('Удалить участника ' + nickname + ' из игры? Это действие необратимо.')) return;
+      try {
+        const res = await fetch('/api/remove-participant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id: currentUser.id, target_id: telegramId })
+        });
+        const data = await res.json();
+        if (data.error) { showToast('Ошибка: ' + data.error); return; }
+        showToast('✅ ' + data.nickname + ' удалён из игры');
         setTimeout(function() { loadAdminList(); }, 500);
       } catch (e) {
         showToast('Ошибка: ' + e.message);
