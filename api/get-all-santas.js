@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
       return res.status(403).json({ error: 'Нет прав' });
     }
 
-    // Все участники (включая админов и наблюдателя) + их пожелания
+    // Получаем всех участников
     const all = await sql`
       SELECT telegram_id, nickname, first_name, last_name, 
              wishes, assigned_to, gift_status, is_admin, is_observer
@@ -45,13 +45,13 @@ module.exports = async (req, res) => {
     const result = all.map(function(s) {
       let assignedNickname = null;
       
-      // Логика отображения "кому попался"
+      // СКРЫВАЕМ ИНФОРМАЦИЮ, ЕСЛИ САНТА НАЗНАЧЕН ТЕКУЩЕМУ АДМИНУ
       if (s.assigned_to) {
         if (s.assigned_to === adminIdNum) {
-          // Если это ты — скрываем
+          // Тот, кто дарит подарок текущему админу — скрыт
           assignedNickname = '🙈 (скрыто)';
         } else {
-          // Иначе показываем ник
+          // Остальных показываем
           assignedNickname = idToNick[s.assigned_to] || 'неизвестно';
         }
       }
@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
         nickname: s.nickname,
         first_name: s.first_name,
         last_name: s.last_name,
-        wishes: s.wishes, // <--- ДОБАВИЛИ ПОЖЕЛАНИЯ
+        wishes: s.wishes,
         gift_status: s.gift_status,
         is_admin: s.is_admin,
         is_observer: s.is_observer,
