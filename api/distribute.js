@@ -28,18 +28,22 @@ module.exports = async (req, res) => {
       return res.status(403).json({ error: 'Нет прав' });
     }
 
-    // Получаем всех участников
+    // БЕРЁМ ВСЕХ, КРОМЕ НАБЛЮДАТЕЛЕЙ (is_observer = FALSE)
+    // Другие админы сюда попадают, а ты — нет.
     const all = await sql`
-      SELECT telegram_id, nickname FROM santas ORDER BY created_at ASC
+      SELECT telegram_id, nickname FROM santas 
+      WHERE is_observer = FALSE
+      ORDER BY created_at ASC
     `;
 
     if (all.length < 2) {
-      return res.status(400).json({ error: 'Нужно минимум 2 участника' });
+      return res.status(400).json({ error: 'Нужно минимум 2 участника (не считая наблюдателя)' });
     }
 
     // Проверяем, не распределено ли уже
     const alreadyAssigned = await sql`
-      SELECT COUNT(*)::int AS cnt FROM santas WHERE assigned_to IS NOT NULL
+      SELECT COUNT(*)::int AS cnt FROM santas 
+      WHERE assigned_to IS NOT NULL AND is_observer = FALSE
     `;
     if (alreadyAssigned[0].cnt > 0) {
       return res.status(400).json({ error: 'Уже распределено. Сначала сбросьте.' });
@@ -48,7 +52,6 @@ module.exports = async (req, res) => {
     // Алгоритм: перемешиваем, назначаем по кругу
     const ids = all.map(function(s) { return s.telegram_id; });
 
-    // Перемешиваем (Fisher-Yates)
     for (let i = ids.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       const tmp = ids[i];
@@ -56,11 +59,9 @@ module.exports = async (req, res) => {
       ids[j] = tmp;
     }
 
-    // Проверяем, что никто не получил себя (при перемешивании может быть)
-    // Если получилось — сдвигаем на 1
+    // Проверяем, что никто не получил себя
     for (let i = 0; i < ids.length; i++) {
       if (ids[i] === all[i].telegram_id) {
-        // Меняем местами с соседом
         const nextIdx = (i + 1) % ids.length;
         const tmp = ids[i];
         ids[i] = ids[nextIdx];
@@ -68,7 +69,7 @@ module.exports = async (req, res) => {
       }
     }
 
-    // Записываем в БД: участник all[i] → дарит ids[i]
+    // Записываем в БД
     for (let i = 0; i < all.length; i++) {
       await sql`
         UPDATE santas SET assigned_to = ${ids[i]} WHERE telegram_id = ${all[i].telegram_id}
