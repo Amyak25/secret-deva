@@ -28,14 +28,15 @@ module.exports = async (req, res) => {
       return res.status(403).json({ error: 'Нет прав' });
     }
 
-    // Все участники (включая админов и наблюдателя)
+    // Все участники (включая админов и наблюдателя) + их пожелания
     const all = await sql`
       SELECT telegram_id, nickname, first_name, last_name, 
-             assigned_to, gift_status, is_admin, is_observer
+             wishes, assigned_to, gift_status, is_admin, is_observer
       FROM santas
       ORDER BY created_at ASC
     `;
 
+    // Словарь для быстрого поиска ника по ID
     const idToNick = {};
     all.forEach(function(s) {
       idToNick[s.telegram_id] = s.nickname;
@@ -43,10 +44,14 @@ module.exports = async (req, res) => {
 
     const result = all.map(function(s) {
       let assignedNickname = null;
+      
+      // Логика отображения "кому попался"
       if (s.assigned_to) {
         if (s.assigned_to === adminIdNum) {
+          // Если это ты — скрываем
           assignedNickname = '🙈 (скрыто)';
         } else {
+          // Иначе показываем ник
           assignedNickname = idToNick[s.assigned_to] || 'неизвестно';
         }
       }
@@ -56,6 +61,7 @@ module.exports = async (req, res) => {
         nickname: s.nickname,
         first_name: s.first_name,
         last_name: s.last_name,
+        wishes: s.wishes, // <--- ДОБАВИЛИ ПОЖЕЛАНИЯ
         gift_status: s.gift_status,
         is_admin: s.is_admin,
         is_observer: s.is_observer,
