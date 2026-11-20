@@ -1,184 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <title>Тайная Дева</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    *::selection { background: #E74C3C !important; color: white !important; }
-    *::-moz-selection { background: #E74C3C !important; color: white !important; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-image: url('images/background.jpg');
-      background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;
-      min-height: 100vh; color: #2C3E50; padding-bottom: 20px;
-    }
-    .container { padding: 16px; max-width: 600px; margin: 0 auto; }
-    .card {
-      background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-radius: 20px; padding: 20px; margin-bottom: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-    }
-    .header { text-align: center; padding: 20px; color: white; margin-bottom: 14px; text-shadow: 0 2px 8px rgba(0,0,0,0.6); }
-    .header h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
-    .header p { font-size: 14px; opacity: 0.95; }
-    .field { margin-bottom: 14px; }
-    .field label { display: block; font-size: 13px; font-weight: 700; color: #34495E; margin-bottom: 6px; }
-    .field input, .field textarea {
-      width: 100%; padding: 12px; border: 2px solid rgba(236,240,241,0.8); border-radius: 10px;
-      font-size: 16px; outline: none; font-family: inherit; background: #F2F4F5; color: #2C3E50; -webkit-text-fill-color: #2C3E50;
-    }
-    .field input:focus, .field textarea:focus { border-color: #3498DB; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3); }
-    .field input::placeholder, .field textarea::placeholder { color: #95A5A6; opacity: 1; }
-    .field textarea { min-height: 80px; resize: vertical; }
-    .required { color: #E74C3C; }
-    
-    .btn {
-      width: 100%; padding: 15px; background: linear-gradient(135deg, #E74C3C, #C0392B); color: white;
-      border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px;
-      box-shadow: 0 4px 12px rgba(231,76,60,0.4);
-    }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; background: #95A5A6; box-shadow: none; }
-    .btn-green { background: linear-gradient(135deg, #27AE60, #229954); box-shadow: 0 4px 12px rgba(39,174,96,0.4); }
-    .btn-grey { background: linear-gradient(135deg, #95A5A6, #7F8C8D); box-shadow: 0 4px 12px rgba(149,165,166,0.4); }
-    
-    .btn-status {
-      padding: 12px 20px; font-size: 14px; font-weight: 700; border: none; border-radius: 12px; cursor: pointer;
-      color: white; display: inline-block; width: 100%; max-width: 300px; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-
-    .status-badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin: 4px 0; }
-    .status-not_seen { background: #F39C12; color: white; }
-    .status-chosen { background: #9B59B6; color: white; }
-    .status-bought { background: #3498DB; color: white; }
-    .status-shipping { background: #E67E22; color: white; }
-    .status-ready { background: #27AE60; color: white; }
-    .status-received { background: #2C3E50; color: white; }
-    .status-text { font-size: 13px; color: #7F8C8D; margin-top: 6px; line-height: 1.4; }
-    
-    .assign-card {
-      background: linear-gradient(135deg, #E74C3C, #C0392B); color: white; padding: 20px;
-      border-radius: 20px; margin-bottom: 14px; box-shadow: 0 6px 20px rgba(231,76,60,0.4); text-align: center;
-    }
-    .assign-card h2 { font-size: 22px; margin-bottom: 10px; text-align: left; }
-    .assign-card .info { font-size: 14px; line-height: 1.6; margin-bottom: 10px; text-align: left; }
-    .assign-card .address { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; margin: 6px 0; font-size: 13px; text-align: left; }
-    
-    .hidden { display: none !important; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
-    .tab {
-      flex: 1; padding: 10px; background: rgba(255,255,255,0.3); backdrop-filter: blur(8px); color: white;
-      border-radius: 10px; text-align: center; font-size: 13px; font-weight: 600; cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-    }
-    .tab.active { background: rgba(255,255,255,0.95); color: #E74C3C; text-shadow: none; }
-    
-    .admin-row { padding: 10px; border-bottom: 1px solid rgba(236,240,241,0.6); font-size: 13px; }
-    .admin-row:last-child { border-bottom: none; }
-    .admin-row .nick { font-weight: 700; }
-    .admin-row .assign { color: #7F8C8D; font-size: 12px; }
-    
-    .toast {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2C3E50; color: white;
-      padding: 12px 24px; border-radius: 10px; font-size: 14px; z-index: 999; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3); max-width: 90%;
-    }
-    .toast.show { display: block; }
-    .gift-progress { display: flex; gap: 4px; margin-top: 10px; }
-    .gift-progress .step { flex: 1; height: 6px; background: rgba(236,240,241,0.7); border-radius: 3px; }
-    .gift-progress .step.done { background: #27AE60; }
-
-    .welcome-screen {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;
-      background-image: url('images/welcome.jpg');
-      background-size: cover; background-position: center; background-repeat: no-repeat;
-      display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 40px 20px; transition: opacity 0.5s ease;
-    }
-    .welcome-screen.hidden { display: none; }
-    .welcome-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%); }
-    .welcome-content { position: relative; z-index: 2; text-align: center; color: white; width: 100%; }
-    .welcome-title { font-size: 36px; font-weight: 800; margin-bottom: 12px; text-shadow: 0 3px 15px rgba(0,0,0,0.8); }
-    .welcome-subtitle { font-size: 16px; margin-bottom: 30px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); opacity: 0.95; }
-
-    .admin-promote-btn { padding: 8px 14px; background: #F39C12; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 6px; }
-    .admin-promote-btn:active { background: #E67E22; }
-
-    .reg-timer {
-      text-align: center; padding: 12px; background: rgba(255, 255, 255, 0.95); border-radius: 14px;
-      margin-bottom: 14px; font-weight: 700; color: #E74C3C; box-shadow: 0 4px 12px rgba(231,76,60,0.3); font-size: 15px;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="welcome-screen" id="welcome-screen">
-    <div class="welcome-overlay"></div>
-    <div class="welcome-content">
-      <div class="welcome-title">🎅 Тайная Дева</div>
-      <div class="welcome-subtitle">Обменяйся подарками с друзьями</div>
-    </div>
-  </div>
-
-  <div class="container" id="app-container" style="display:none;">
-    <div class="header">
-      <h1>🎅 Тайная Дева</h1>
-      <p>Обменяйся подарками с друзьями!</p>
-    </div>
-
-    <div class="reg-timer" id="main-reg-timer" style="display: none;">⏰ До конца регистрации: ...</div>
-
-    <div id="screen-register" class="hidden">
-      <div class="reg-timer" id="reg-timer">⏰ До конца регистрации: загрузка...</div>
-      
-      <div class="card">
-        <h2 style="margin-bottom: 14px;">📝 Регистрация</h2>
-
-        <div class="field">
-          <label>Имя <span class="required">*</span></label>
-          <input type="text" id="reg-first-name" placeholder="Иван">
-        </div>
-        <div class="field">
-          <label>Фамилия <span class="required">*</span></label>
-          <input type="text" id="reg-last-name" placeholder="Иванов">
-        </div>
-        <div class="field">
-          <label>Телефон <span class="required">*</span></label>
-          <input type="tel" id="reg-phone" placeholder="+7 900 000 00 00">
-        </div>
-        <div class="field">
-          <label>Ник в Telegram <span class="required">*</span></label>
-          <input type="text" id="reg-nickname" placeholder="@username">
-        </div>
-        <div class="field">
-          <label>Адрес Озон</label>
-          <textarea id="reg-ozon" placeholder="Пункт выдачи Озон"></textarea>
-        </div>
-        <div class="field">
-          <label>Адрес Wildberries</label>
-          <textarea id="reg-wb" placeholder="Пункт выдачи WB"></textarea>
-        </div>
-        <div class="field">
-          <label>Адрес СДЭК</label>
-          <textarea id="reg-cdek" placeholder="Пункт выдачи СДЭК"></textarea>
-        </div>
-        <div class="field">
-          <label>Пожелания (что хочешь получить?)</label>
-          <textarea id="reg-wishes" placeholder="Люблю книги, сладости, тёплые носки..."></textarea>
-        </div>
-
-        <button class="btn" id="reg-submit-btn" onclick="register()">Начать</button>
-      </div>
-    </div>
-
-    <div id="screen-main" class="hidden">
-      <div class="tabs">
-        <div class="tab active" id="tab-main" onclick="showTab('main')">🎁 Главная</div>
-        <div class="tab" id="tab-profile" onclick="showTab('profile')">👤 Профиль</div>
-        <div class="tab hidden" id="tab-admin" onclick="showTab('admin')">⚙️ Админ</div>
-      </div>
-
+```html
       <div id="tab-content-main">
         <div class="card">
           <h2 style="margin-bottom: 10px;">🎁 Твой подарок</h2>
@@ -275,7 +95,7 @@
 
       if (result.error === 'Ты ещё не зарегистрирован') {
         const settings = await apiGet('get-settings');
-        
+
         document.getElementById('screen-register').classList.remove('hidden');
         document.getElementById('screen-main').classList.add('hidden');
 
@@ -313,7 +133,73 @@
     async function loadMainTimer() {
       const settings = await apiGet('get-settings');
       const timerEl = document.getElementById('main-reg-timer');
-      
+
+      if (settings.is_open) {
+        timerEl.style.display = 'block';
+        startMainTimer(settings.seconds_left);
+      } else {
+        timerEl.style.display = 'block';
+        timerEl.textContent = '🔒 Регистрация закрыта';
+      }
+    }
+
+    function startMainTimer(secondsLeft) {
+      const timerEl = document.getElementById('main-reg-timer');
+      let remaining = secondsLeft;
+
+      function update() {
+        if (remaining <= 0) {
+          clearInterval(mainRegTimerInterval);
+          timerEl.textContent = '🔒 Регистрация закрыта';
+          return;
+        }
+        const days = Math.floor(remaining / 86400);
+        const hours = Math.floor((remaining % 86400) / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+
+        let text = '⏰ До конца регистрации: ';
+        if (days > 0) text += days + ' д ' + hours + ' ч';
+        else if (hours > 0) text += hours + ' ч ' + minutes + ' мин';
+        else text += minutes + ' мин';
+
+        timerEl.textContent = text;
+        remaining -= 60;
+      }
+      update();
+      mainRegTimerInterval = setInterval(update, 60000);
+    }
+
+    function startRegTimer(secondsLeft) {
+      const timerEl = document.getElementById('reg-timer');
+      let remaining = secondsLeft;
+
+      function update() {
+        if (remaining <= 0) {
+          clearInterval(regTimerInterval);
+          timerEl.textContent = '🔒 Регистрация закрыта';
+          document.getElementById('reg-submit-btn').disabled = true;
+          document.getElementById('reg-submit-btn').textContent = 'Регистрация закрыта';
+          return;
+        }
+        const days = Math.floor(remaining / 86400);
+        const hours = Math.floor((remaining % 86400) / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+
+        let text = '⏰ До конца регистрации: ';
+        if (days > 0) text += days + ' д ' + hours + ' ч';
+        else if (hours > 0) text += hours + ' ч ' + minutes + ' мин';
+        else text += minutes + ' мин';
+
+        timerEl.textContent = text;
+        remaining -= 60;
+      }
+      update();
+      regTimerInterval = setInterval(update, 60000);
+    }
+        async function loadMainTimer() {
+      const settings = await apiGet('get-settings');
+      const timerEl = document.getElementById('main-reg-timer');
+
       if (settings.is_open) {
         timerEl.style.display = 'block';
         startMainTimer(settings.seconds_left);
@@ -449,6 +335,10 @@
       for (let i = 0; i < 6; i++) html += '<div class="step ' + (i <= currentIdx ? 'done' : '') + '"></div>';
       html += '</div>';
 
+      if (myStatus === 'ready') {
+        html += '<button class="btn btn-green" style="margin-top:14px;" onclick="confirmReceived()">🎁 Я получил(а) подарок</button>';
+      }
+
       document.getElementById('my-gift-status').innerHTML = html;
 
       if (assignedData) {
@@ -461,12 +351,10 @@
         if (assignedData.wb_address) aHtml += '<div class="address"><b>WB:</b> ' + assignedData.wb_address + '</div>';
         if (assignedData.cdek_address) aHtml += '<div class="address"><b>СДЭК:</b> ' + assignedData.cdek_address + '</div>';
 
-       // Берем статус подопечного, чтобы показывать актуальные кнопки
         const recipientStatus = assignedData.gift_status || 'not_seen';
         aHtml += '<div style="margin-top:10px; font-size:13px; opacity:0.9;">Статус подарка для подопечного: <b>' + (STATUS_LABELS[recipientStatus] ? STATUS_LABELS[recipientStatus].label : recipientStatus) + '</b></div>';
 
         aHtml += '<div style="margin-top:16px;">';
-        // Меняем условия, чтобы кнопки появлялись исходя из статуса ПОДОПЕЧНОГО
         if (recipientStatus === 'not_seen' || recipientStatus === 'chosen') aHtml += '<button class="btn-status" onclick="setStatus(\'chosen\')" style="background: #9B59B6;">🟣 Выбираю подарок</button><br>';
         if (recipientStatus === 'chosen' || recipientStatus === 'bought') aHtml += '<button class="btn-status" onclick="setStatus(\'bought\')" style="background: #3498DB;">🔵 Подарок куплен</button><br>';
         if (recipientStatus === 'bought' || recipientStatus === 'shipping') aHtml += '<button class="btn-status" onclick="setStatus(\'shipping\')" style="background: #E67E22;">🟠 Подарок в пути</button><br>';
@@ -478,17 +366,162 @@
         document.getElementById('assignment-block').innerHTML = '<div class="card"><div style="text-align:center; color:#7F8C8D; padding:20px;">⏳ Идёт регистрация. Ждём, когда админ распределит Санту!</div></div>';
       }
     }
+        async function register() {
+      const firstName = document.getElementById('reg-first-name').value.trim();
+      const lastName = document.getElementById('reg-last-name').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const nickname = document.getElementById('reg-nickname').value.trim();
+      const ozon = document.getElementById('reg-ozon').value.trim();
+      const wb = document.getElementById('reg-wb').value.trim();
+      const cdek = document.getElementById('reg-cdek').value.trim();
+      const wishes = document.getElementById('reg-wishes').value.trim();
 
-    async function setStatus(newStatus) {
-      // Передаем ID того, КОМУ дарим (подопечному), чтобы на сервере обновился его статус
-      const result = await api('update-gift-status', { 
-        telegram_id: currentUser.id, 
-        target_id: assignedData ? assignedData.telegram_id : null, // <-- ДОБАВЛЕНО ЭТО
-        new_status: newStatus 
+      if (!firstName || !lastName || !phone || !nickname) { showToast('Заполни обязательные поля'); return; }
+
+      const result = await api('register-santa', {
+        telegram_id: currentUser.id, nickname: nickname, first_name: firstName, last_name: lastName,
+        phone: phone, ozon_address: ozon, wb_address: wb, cdek_address: cdek, wishes: wishes
+      });
+
+      if (result.error) { showToast('Ошибка: ' + result.error); return; }
+
+      showToast('✅ Сохранено!');
+      setTimeout(function() { location.reload(); }, 800);
+    }
+
+    function fillProfile() {
+      document.getElementById('prof-first-name').value = myData.first_name || '';
+      document.getElementById('prof-last-name').value = myData.last_name || '';
+      document.getElementById('prof-phone').value = myData.phone || '';
+      document.getElementById('prof-nickname').value = myData.nickname || '';
+      document.getElementById('prof-ozon').value = myData.ozon_address || '';
+      document.getElementById('prof-wb').value = myData.wb_address || '';
+      document.getElementById('prof-cdek').value = myData.cdek_address || '';
+      document.getElementById('prof-wishes').value = myData.wishes || '';
+    }
+
+    async function updateProfile() {
+      const result = await api('register-santa', {
+        telegram_id: currentUser.id,
+        nickname: document.getElementById('prof-nickname').value.trim(),
+        first_name: document.getElementById('prof-first-name').value.trim(),
+        last_name: document.getElementById('prof-last-name').value.trim(),
+        phone: document.getElementById('prof-phone').value.trim(),
+        ozon_address: document.getElementById('prof-ozon').value.trim(),
+        wb_address: document.getElementById('prof-wb').value.trim(),
+        cdek_address: document.getElementById('prof-cdek').value.trim(),
+        wishes: document.getElementById('prof-wishes').value.trim()
       });
       if (result.error) { showToast('Ошибка: ' + result.error); return; }
-      showToast('✅ Статус подопечного обновлен');
-      setTimeout(function() { location.reload(); }, 600);
+      showToast('✅ Обновлено!');
+      setTimeout(function() { location.reload(); }, 800);
+    }
+
+    function linkify(text) {
+      if (!text) return '';
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlRegex, function(url) {
+        return '<a href="' + url + '" target="_blank" style="color: #F1C40F; text-decoration: underline; font-weight: bold;">Ссылка на товар 🔗</a>';
+      });
+    }
+
+    function renderMain() {
+      const myStatus = myData.gift_status || 'not_seen';
+      const statusInfo = STATUS_LABELS[myStatus] || STATUS_LABELS.not_seen;
+
+      let html = '<div class="status-badge status-' + myStatus + '">' + statusInfo.icon + ' ' + statusInfo.label + '</div>';
+      html += '<div class="status-text">' + statusInfo.text + '</div>';
+
+      const statusOrder = ['not_seen', 'chosen', 'bought', 'shipping', 'ready', 'received'];
+      const currentIdx = statusOrder.indexOf(myStatus);
+      html += '<div class="gift-progress">';
+      for (let i = 0; i < 6; i++) html += '<div class="step ' + (i <= currentIdx ? 'done' : '') + '"></div>';
+      html += '</div>';
+
+      if (myStatus === 'ready') {
+        html += '<button class="btn btn-green" style="margin-top:14px;" onclick="confirmReceived()">🎁 Я получил(а) подарок</button>';
+      }
+
+      document.getElementById('my-gift-status').innerHTML = html;
+
+      if (assignedData) {
+        let aHtml = '<div class="assign-card">';
+        aHtml += '<h2>🎅 Твой подопечный</h2>';
+        aHtml += '<div class="info"><b>' + assignedData.nickname + '</b></div>';
+        aHtml += '<div class="info">' + assignedData.first_name + ' ' + assignedData.last_name + '</div>';
+        if (assignedData.wishes) aHtml += '<div class="info"><b>Пожелания:</b> ' + linkify(assignedData.wishes) + '</div>';
+        if (assignedData.ozon_address) aHtml += '<div class="address"><b>Озон:</b> ' + assignedData.ozon_address + '</div>';
+        if (assignedData.wb_address) aHtml += '<div class="address"><b>WB:</b> ' + assignedData.wb_address + '</div>';
+        if (assignedData.cdek_address) aHtml += '<div class="address"><b>СДЭК:</b> ' + assignedData.cdek_address + '</div>';
+
+        // Берем статус подопечного, чтобы показывать актуальные кнопки
+        const recipientStatus = assignedData.gift_status || 'not_seen';
+        aHtml += '<div style="margin-top:10px; font-size:13px; opacity:0.9;">Статус подарка для подопечного: <b>' + (STATUS_LABELS[recipientStatus] ? STATUS_LABELS[recipientStatus].label : recipientStatus) + '</b></div>';
+
+        aHtml += '<div style="margin-top:16px;">';
+        // Кнопки появляются исходя из статуса подопечного
+        if (recipientStatus === 'not_seen' || recipientStatus === 'chosen') aHtml += '<button class="btn-status" onclick="setStatus(\'chosen\')" style="background: #9B59B6;">🟣 Выбираю подарок</button><br>';
+        if (recipientStatus === 'chosen' || recipientStatus === 'bought') aHtml += '<button class="btn-status" onclick="setStatus(\'bought\')" style="background: #3498DB;">🔵 Подарок куплен</button><br>';
+        if (recipientStatus === 'bought' || recipientStatus === 'shipping') aHtml += '<button class="btn-status" onclick="setStatus(\'shipping\')" style="background: #E67E22;">🟠 Подарок в пути</button><br>';
+        if (recipientStatus === 'shipping' || recipientStatus === 'ready') aHtml += '<button class="btn-status" onclick="setStatus(\'ready\')" style="background: #27AE60;">🟢 Готов к выдаче</button>';
+        aHtml += '</div></div>';
+
+        document.getElementById('assignment-block').innerHTML = aHtml;
+      } else {
+        document.getElementById('assignment-block').innerHTML = '<div class="card"><div style="text-align:center; color:#7F8C8D; padding:20px;">⏳ Идёт регистрация. Ждём, когда админ распределит Санту!</div></div>';
+      }
+    }
+        async function setStatus(newStatus) {
+      if (!currentUser || !assignedData || !assignedData.telegram_id) {
+        showToast('Не удалось определить подопечного');
+        return;
+      }
+
+      try {
+        const result = await api('update-gift-status', {
+          telegram_id: currentUser.id,
+          target_id: assignedData.telegram_id,
+          new_status: newStatus
+        });
+
+        if (!result || result.error || !result.success) {
+          showToast('Ошибка: ' + (result && result.error ? result.error : 'Не удалось обновить статус'));
+          return;
+        }
+
+        showToast('✅ Статус подарка подопечного обновлён');
+        setTimeout(function() { location.reload(); }, 600);
+      } catch (err) {
+        console.error('Ошибка setStatus:', err);
+        showToast('Не удалось связаться с сервером');
+      }
+    }
+
+    // Получатель подтверждает получение подарка.
+    // API обновляет gift_status самого текущего пользователя.
+    async function confirmReceived() {
+      if (!currentUser) {
+        showToast('Не удалось определить пользователя');
+        return;
+      }
+
+      try {
+        const result = await api('update-gift-status', {
+          telegram_id: currentUser.id,
+          new_status: 'received'
+        });
+
+        if (!result || result.error || !result.success) {
+          showToast('Ошибка: ' + (result && result.error ? result.error : 'Не удалось подтвердить получение'));
+          return;
+        }
+
+        showToast('🎉 Получение подарка подтверждено!');
+        setTimeout(function() { location.reload(); }, 600);
+      } catch (err) {
+        console.error('Ошибка confirmReceived:', err);
+        showToast('Не удалось связаться с сервером');
+      }
     }
 
     async function loadAdminList() {
@@ -496,7 +529,7 @@
       list.innerHTML = 'Загрузка...';
       const result = await api('get-all-santas', { admin_id: currentUser.id });
       if (result.error) { list.innerHTML = '<div style="color:#E74C3C;">Ошибка: ' + result.error + '</div>'; return; }
-      
+
       const titleEl = document.getElementById('admin-participants-title');
       if (titleEl) {
         titleEl.textContent = '👥 Все участники (' + result.santas.length + ')';
@@ -505,19 +538,19 @@
       let html = '';
       result.santas.forEach(function(s) {
         const sLabel = STATUS_LABELS[s.gift_status] ? STATUS_LABELS[s.gift_status].label : (s.gift_status || 'not_seen');
-        
+
         html += '<div class="admin-row">';
-        
+
         // Ник и роль
         let roleIcon = '';
         if (s.is_observer) roleIcon = ' 👁️ (наблюдатель)';
         else if (s.is_admin) roleIcon = ' 👑 (админ)';
-        
+
         html += '<div class="nick">' + s.nickname + roleIcon + '</div>';
-        
+
         // Кому попался
         html += '<div class="assign">' + (s.assigned_nickname ? '🎁 Дарит: <b>' + s.assigned_nickname + '</b>' : '🎁 Дарит: (не назначен)') + '</div>';
-        
+
         // Статус подарка
         html += '<div class="assign">Статус: ' + sLabel + '</div>';
 
@@ -527,21 +560,21 @@
         } else {
           html += '<div class="assign" style="color: #BDC3C7;">💭 (пожеланий нет)</div>';
         }
-        
+
         // Кнопки управления
         html += '<div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">';
-        
+
         // Кнопки для обычного игрока
         if (!s.is_admin && !s.is_observer) {
           html += '<button class="admin-promote-btn" onclick="makeAdmin(' + s.telegram_id + ', \'' + s.nickname + '\')">👑 Сделать админом</button>';
           html += '<button class="admin-promote-btn" style="background: #E74C3C;" onclick="removeParticipant(' + s.telegram_id + ', \'' + s.nickname + '\')">🗑️ Удалить</button>';
         }
-        
-        // Снять админку (если админ, но не ты и не наблюдатель)
+
+        // Снять админку
         if (s.is_admin && !s.is_observer && s.telegram_id !== currentUser.id) {
           html += '<button class="admin-promote-btn" style="background: #95A5A6;" onclick="removeAdmin(' + s.telegram_id + ', \'' + s.nickname + '\')">⬇️ Снять админку</button>';
         }
-        
+
         html += '</div></div>';
       });
       list.innerHTML = html;
@@ -569,7 +602,7 @@
 
     window.removeAdmin = async function(telegramId, nickname) {
       if (!confirm('Снять админку с ' + nickname + '? Он станет обычным игроком.')) return;
-      
+
       try {
         const res = await fetch('/api/remove-admin', {
           method: 'POST',
@@ -580,12 +613,12 @@
           })
         });
         const data = await res.json();
-        
+
         if (data.error) { 
           showToast('Ошибка: ' + data.error); 
           return; 
         }
-        
+
         showToast('✅ ' + nickname + ' больше не админ');
         setTimeout(function() { loadAdminList(); }, 500);
       } catch (e) {
