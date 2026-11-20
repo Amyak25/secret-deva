@@ -1,29 +1,32 @@
-
 const { neon } = require('@neondatabase/serverless');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({
+      error: 'Method not allowed'
+    });
   }
 
   try {
     const body = req.body || {};
 
-    const telegramIdNum = Number(body.telegram_id);
+    const telegramId = String(body.telegram_id || '').trim();
     const newStatus = body.new_status;
 
-    if (!body.telegram_id || !newStatus) {
+    // Проверяем Telegram ID
+    if (!telegramId) {
       return res.status(400).json({
-        error: 'telegram_id и new_status обязательны'
+        error: 'telegram_id обязателен'
       });
     }
 
-    if (!Number.isSafeInteger(telegramIdNum) || telegramIdNum <= 0) {
+    if (!/^\d+$/.test(telegramId)) {
       return res.status(400).json({
         error: 'Некорректный telegram_id'
       });
     }
 
+    // Разрешённые статусы
     const validStatuses = [
       'not_seen',
       'chosen',
@@ -49,9 +52,12 @@ module.exports = async (req, res) => {
 
     // Находим пользователя, который нажал кнопку
     const me = await sql`
-      SELECT telegram_id, assigned_to
+      SELECT
+        telegram_id::text AS telegram_id,
+        assigned_to::text AS assigned_to
       FROM santas
-      WHERE telegram_id = ${telegramIdNum}
+      WHERE telegram_id::text = ${telegramId}
+      LIMIT 1
     `;
 
     if (me.length === 0) {
@@ -62,14 +68,15 @@ module.exports = async (req, res) => {
 
     const myData = me[0];
 
-    // Получатель подтверждает, что подарок получен
+    // Если пользователь подтверждает получение подарка
     if (newStatus === 'received') {
 
       // Проверяем, что этому человеку действительно назначен Санта
       const santa = await sql`
         SELECT telegram_id
         FROM santas
-        WHERE assigned_to = ${telegramIdNum}
+        WHERE assigned_to::text = ${telegramId}
+        LIMIT 1
       `;
 
       if (santa.length === 0) {
@@ -78,11 +85,11 @@ module.exports = async (req, res) => {
         });
       }
 
-      // Статус received записываем самому получателю
+      // Обновляем статус подарка самого пользователя
       const updated = await sql`
         UPDATE santas
         SET gift_status = 'received'
-        WHERE telegram_id = ${telegramIdNum}
+        WHERE telegram_id::text = ${telegramId}
         RETURNING telegram_id
       `;
 
@@ -98,40 +105,28 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Для остальных статусов нужен ID подопечного
-    if (!body.target_id) {
+    // Для остальных статусов проверяем назначенного подопечного
+    const targetId = String(myData.assigned_to || '').trim();
+
+    if (!targetId) {
       return res.status(400).json({
-        error: 'Не указан подопечный'
+        error: 'Тебе ещё не назначен подопечный'
       });
     }
 
-    const targetIdNum = Number(body.target_id);
-
-    if (!Number.isSafeInteger(targetIdNum) || targetIdNum <= 0) {
-      return res.status(400).json({
-        error: 'Некорректный target_id'
-      });
-    }
-
-    // Сравниваем ID как строки, чтобы избежать ошибки
-    // из-за разницы между числом и строкой
-    if (String(myData.assigned_to) !== String(targetIdNum)) {
-      return res.status(403).json({
-        error: 'Это не твой подопечный!'
-      });
-    }
-
-    // Обновляем статус подарка подопечного
+    // Обновляем статус именно подопечного,
+    // которого сервер нашёл по assigned_to.
+    // target_id от браузера больше не используется.
     const updated = await sql`
       UPDATE santas
       SET gift_status = ${newStatus}
-      WHERE telegram_id = ${targetIdNum}
+      WHERE telegram_id::text = ${targetId}
       RETURNING telegram_id
     `;
 
     if (updated.length === 0) {
       return res.status(404).json({
-        error: 'Подопечный не найден'
+        error: 'Подопечный не найден в базе данных'
       });
     }
 
