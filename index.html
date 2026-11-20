@@ -461,14 +461,16 @@
         if (assignedData.wb_address) aHtml += '<div class="address"><b>WB:</b> ' + assignedData.wb_address + '</div>';
         if (assignedData.cdek_address) aHtml += '<div class="address"><b>СДЭК:</b> ' + assignedData.cdek_address + '</div>';
 
-        const myGiftStatus = myData.gift_status || 'not_seen';
-        aHtml += '<div style="margin-top:10px; font-size:13px; opacity:0.9;">Твой статус подарка: <b>' + (STATUS_LABELS[myGiftStatus] ? STATUS_LABELS[myGiftStatus].label : myGiftStatus) + '</b></div>';
+       // Берем статус подопечного, чтобы показывать актуальные кнопки
+        const recipientStatus = assignedData.gift_status || 'not_seen';
+        aHtml += '<div style="margin-top:10px; font-size:13px; opacity:0.9;">Статус подарка для подопечного: <b>' + (STATUS_LABELS[recipientStatus] ? STATUS_LABELS[recipientStatus].label : recipientStatus) + '</b></div>';
 
         aHtml += '<div style="margin-top:16px;">';
-        if (myGiftStatus === 'not_seen' || myGiftStatus === 'chosen') aHtml += '<button class="btn-status" onclick="setStatus(\'chosen\')" style="background: #9B59B6;">🟣 Выбираю подарок</button><br>';
-        if (myGiftStatus === 'chosen' || myGiftStatus === 'bought') aHtml += '<button class="btn-status" onclick="setStatus(\'bought\')" style="background: #3498DB;">🔵 Подарок куплен</button><br>';
-        if (myGiftStatus === 'bought' || myGiftStatus === 'shipping') aHtml += '<button class="btn-status" onclick="setStatus(\'shipping\')" style="background: #E67E22;">🟠 Подарок в пути</button><br>';
-        if (myGiftStatus === 'shipping' || myGiftStatus === 'ready') aHtml += '<button class="btn-status" onclick="setStatus(\'ready\')" style="background: #27AE60;">🟢 Готов к выдаче</button>';
+        // Меняем условия, чтобы кнопки появлялись исходя из статуса ПОДОПЕЧНОГО
+        if (recipientStatus === 'not_seen' || recipientStatus === 'chosen') aHtml += '<button class="btn-status" onclick="setStatus(\'chosen\')" style="background: #9B59B6;">🟣 Выбираю подарок</button><br>';
+        if (recipientStatus === 'chosen' || recipientStatus === 'bought') aHtml += '<button class="btn-status" onclick="setStatus(\'bought\')" style="background: #3498DB;">🔵 Подарок куплен</button><br>';
+        if (recipientStatus === 'bought' || recipientStatus === 'shipping') aHtml += '<button class="btn-status" onclick="setStatus(\'shipping\')" style="background: #E67E22;">🟠 Подарок в пути</button><br>';
+        if (recipientStatus === 'shipping' || recipientStatus === 'ready') aHtml += '<button class="btn-status" onclick="setStatus(\'ready\')" style="background: #27AE60;">🟢 Готов к выдаче</button>';
         aHtml += '</div></div>';
 
         document.getElementById('assignment-block').innerHTML = aHtml;
@@ -478,9 +480,14 @@
     }
 
     async function setStatus(newStatus) {
-      const result = await api('update-gift-status', { telegram_id: currentUser.id, new_status: newStatus });
+      // Передаем ID того, КОМУ дарим (подопечному), чтобы на сервере обновился его статус
+      const result = await api('update-gift-status', { 
+        telegram_id: currentUser.id, 
+        target_id: assignedData ? assignedData.telegram_id : null, // <-- ДОБАВЛЕНО ЭТО
+        new_status: newStatus 
+      });
       if (result.error) { showToast('Ошибка: ' + result.error); return; }
-      showToast('✅ Статус обновлён');
+      showToast('✅ Статус подопечного обновлен');
       setTimeout(function() { location.reload(); }, 600);
     }
 
